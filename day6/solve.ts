@@ -38,10 +38,7 @@ function solve2(customs : Array<string>) : Array<number> {
                 }
             })
         })
-        console.log(bits)
-        let reduced = bits.reduce((n1, n2) => (parseInt(n1, 2) & parseInt(n2, 2)).toString(2)).split('').reduce((n1, n2) => (+n1 + +n2).toString())
-        console.log(reduced)
-        counts.push(reduced)
+        counts.push(bits.reduce((n1, n2) => (parseInt(n1, 2) & parseInt(n2, 2)).toString(2)).split('').reduce((n1, n2) => (+n1 + +n2).toString()))
     })
 
     return counts
