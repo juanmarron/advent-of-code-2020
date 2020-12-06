@@ -15,6 +15,9 @@ function solve2(customs : Array<string>) : Array<number> {
 
     let counts = []
 
+    // Well I overcomplicated the crap out of this because I thought it would be simple to convert the strings to a bit array where
+    // the index represent the letter and the value (0/1) represents whether it's in the set.
+    // By the time I realized I should have just gone with a basic intersection implementation I was already in too deep.
     customs.forEach(c => {
         let each = c.split(" ")
 
