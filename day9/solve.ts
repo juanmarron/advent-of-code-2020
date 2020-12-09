@@ -8,8 +8,6 @@ function solve(input : Array<number>, preamble : number) : number {
             return input[i]
         }
     }
-
-    return -1
 }
 
 function contiguous(numbers : Array<number>, addUpTo : number) : number {
@@ -26,13 +24,11 @@ function contiguous(numbers : Array<number>, addUpTo : number) : number {
     }
 
     const contiguousArray = numbers.slice(left, right)
-    contiguousArray.sort((n1,n2) => n1 - n2)
 
-    return contiguousArray[0] + contiguousArray[contiguousArray.length-1]
+    return Math.min(...contiguousArray) + Math.max(...contiguousArray)
 }
 
 function sum(numbers : Array<number>) : number {
-    console.log(numbers)
     return numbers.reduce((n1, n2) => n1 + n2)
 }
 
@@ -54,7 +50,8 @@ function readInputArray() : Array<number> {
 
 function main() {
     const input = readInputArray()
-    console.log(contiguous(input, 15353384))
+    console.log(solve(input, 25))
+    console.log(contiguous(input, solve(input, 25)))
 }
 
 main()
