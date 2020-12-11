@@ -128,10 +128,10 @@ function adjacentOccupiedSeatsImmediate(seatLayout : Array<Array<string>>, posit
     let adjacents = 0
 
     for (let i = 0; i < directions.length; i++) {
-        const xOffset = position.y + directions[i][1]
-        const yOffset = position.x + directions[i][0]
-        if (seatLayout[xOffset] && seatLayout[xOffset][yOffset]) {
-            const adjSeat = seatLayout[xOffset][yOffset]
+        const xOffset = position.x + directions[i][0]
+        const yOffset = position.y + directions[i][1]
+        if (seatLayout[yOffset] && seatLayout[yOffset][xOffset]) {
+            const adjSeat = seatLayout[yOffset][xOffset]
             if (adjSeat === '#') {
                 adjacents++
             }
