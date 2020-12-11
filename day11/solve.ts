@@ -1,4 +1,3 @@
-import { dir } from 'console';
 import {cloneDeep} from 'lodash';
 
 // clockwise starting left
@@ -22,53 +21,56 @@ function solve(seatLayout : Array<Array<string>>) : number {
     const length = seatLayout.length
     const width = seatLayout[0].length
 
-    let layout = seatLayout
-    for (let n = 0; n < 1000; n++) {
-    // while (!deepEquality(layout, seatLayout) && layout == seatLayout) {
-        const newLayout = cloneDeep(layout);
-
+    let oldLayout = seatLayout
+    let newLayout = cloneDeep(oldLayout)
+    let oldLayoutCached
+    let iterations = 0
+    do {
         for (let i = 0; i < length; i++) {
             for (let j = 0; j < width; j++) {
                 const pos = {
                     x: j,
                     y: i
                 }
-                const occSeats = adjacentOccupiedSeatsImmediate(layout, pos)
+                const occSeats = adjacentOccupiedSeatsImmediate(oldLayout, pos)
                 if (occSeats === 0) {
                     newLayout[i][j] = '#'
                 } else if (occSeats > 3) {
                     newLayout[i][j] = 'L'
                 }
-                if (layout[i][j] === '.') {
+                if (oldLayout[i][j] === '.') {
                     newLayout[i][j] = '.'
                 }
             }
         }
 
-        layout = newLayout
-    }
+        oldLayoutCached = oldLayout
+        oldLayout = newLayout
+        newLayout = cloneDeep(oldLayout)
+        iterations++
+    } while (!deepEquality(oldLayoutCached, newLayout));
+    console.log(`took ${iterations} iters to stabilize`)
 
-    return howManyOccupiedSeats(layout)
+    return howManyOccupiedSeats(newLayout)
 }
 
 function solve2(seatLayout : Array<Array<string>>) : number {
     const length = seatLayout.length
     const width = seatLayout[0].length
 
-    let layout = seatLayout
-    for (let n = 0; n < 1000; n++) {
-        // Eventually I'd do this right by compaaring the arrays and seeing when they match. But it's late so I just did many iterations to 'guarantee' that they stabilize
-    // while (!deepEquality(layout, seatLayout) && layout == seatLayout) {
-        const newLayout = cloneDeep(layout);
-
+    let oldLayout = seatLayout
+    let newLayout = cloneDeep(oldLayout)
+    let oldLayoutCached
+    let iterations = 0
+    do {
         for (let i = 0; i < length; i++) {
             for (let j = 0; j < width; j++) {
                 const pos = {
                     x: j,
                     y: i
                 }
-                const occSeats = adjacentOccupiedSeatsFarAway(layout, pos)
-                if (layout[i][j] === '.') {
+                const occSeats = adjacentOccupiedSeatsSkipFloor(oldLayout, pos)
+                if (oldLayout[i][j] === '.') {
                     newLayout[i][j] = '.'
                 } else if (occSeats === 0) {
                     newLayout[i][j] = '#'
@@ -78,10 +80,14 @@ function solve2(seatLayout : Array<Array<string>>) : number {
             }
         }
 
-        layout = newLayout
-    }
+        oldLayoutCached = oldLayout
+        oldLayout = newLayout
+        newLayout = cloneDeep(oldLayout)
+        iterations++
+    } while (!deepEquality(oldLayoutCached, newLayout));
+    console.log(`took ${iterations} iters to stabilize`)
 
-    return howManyOccupiedSeats(layout)
+    return howManyOccupiedSeats(newLayout)
 }
 
 function deepEquality(layout1 : Array<Array<string>>, layout2 : Array<Array<string>>) : boolean {
@@ -135,11 +141,11 @@ function adjacentOccupiedSeatsImmediate(seatLayout : Array<Array<string>>, posit
     return adjacents
 }
 
-function adjacentOccupiedSeatsFarAway(seatLayout : Array<Array<string>>, position : Seat) : number {
+function adjacentOccupiedSeatsSkipFloor(seatLayout : Array<Array<string>>, position : Seat) : number {
     let adjacents = 0
 
     for (let i = 0; i < directions.length; i++) {
-        if (directionHasOccupiedSeat(seatLayout, position, directions[i])) {
+        if (directionHasOccupiedSeatSkippingFloor(seatLayout, position, directions[i])) {
             adjacents++
         }
     }
@@ -147,7 +153,7 @@ function adjacentOccupiedSeatsFarAway(seatLayout : Array<Array<string>>, positio
     return adjacents
 }
 
-function directionHasOccupiedSeat(seatLayout : Array<Array<string>>, position : Seat, direction : Array<number>) : boolean {
+function directionHasOccupiedSeatSkippingFloor(seatLayout : Array<Array<string>>, position : Seat, direction : Array<number>) : boolean {
     let xDir = direction[0]
     let yDir = direction[1]
     let xPos = position.x + xDir
