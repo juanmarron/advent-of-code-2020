@@ -105,8 +105,8 @@ function readInputArray() : Array<number> {
 
 function main() {
     const input = readInputArray()
-    // const solved = solve(input)
-    // console.log(solved[0] * solved[1])
+    const solved = solve(input)
+    console.log(solved[0] * solved[1])
     console.log(solve2(input))
 }
 
