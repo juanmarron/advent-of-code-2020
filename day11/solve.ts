@@ -23,32 +23,39 @@ function solve(seatLayout : Array<Array<string>>) : number {
 
     let oldLayout = seatLayout
     let newLayout = cloneDeep(oldLayout)
-    let oldLayoutCached
     let iterations = 0
+    let diff = false
     do {
+        diff = false
         for (let i = 0; i < length; i++) {
             for (let j = 0; j < width; j++) {
                 const pos = {
                     x: j,
                     y: i
                 }
-                const occSeats = adjacentOccupiedSeatsImmediate(oldLayout, pos)
-                if (occSeats === 0) {
-                    newLayout[i][j] = '#'
-                } else if (occSeats > 3) {
-                    newLayout[i][j] = 'L'
-                }
                 if (oldLayout[i][j] === '.') {
                     newLayout[i][j] = '.'
+                } else {
+                    const occSeats = adjacentOccupiedSeatsImmediate(oldLayout, pos)
+                    if (occSeats === 0) {
+                        newLayout[i][j] = '#'
+                        if (oldLayout[i][j] !== '#') {
+                            diff = true
+                        }
+                    }  if (occSeats > 3) {
+                        newLayout[i][j] = 'L'
+                        if (oldLayout[i][j] !== 'L') {
+                            diff = true
+                        }
+                    }
                 }
             }
         }
 
-        oldLayoutCached = oldLayout
         oldLayout = newLayout
         newLayout = cloneDeep(oldLayout)
         iterations++
-    } while (!deepEquality(oldLayoutCached, newLayout));
+    } while (diff)
     console.log(`took ${iterations} iters to stabilize`)
 
     return howManyOccupiedSeats(newLayout)
@@ -60,51 +67,42 @@ function solve2(seatLayout : Array<Array<string>>) : number {
 
     let oldLayout = seatLayout
     let newLayout = cloneDeep(oldLayout)
-    let oldLayoutCached
     let iterations = 0
+    let diff = false
     do {
+        diff = false
         for (let i = 0; i < length; i++) {
             for (let j = 0; j < width; j++) {
                 const pos = {
                     x: j,
                     y: i
                 }
-                const occSeats = adjacentOccupiedSeatsSkipFloor(oldLayout, pos)
                 if (oldLayout[i][j] === '.') {
                     newLayout[i][j] = '.'
-                } else if (occSeats === 0) {
-                    newLayout[i][j] = '#'
-                } else if (occSeats > 4) {
-                    newLayout[i][j] = 'L'
+                } else {
+                    const occSeats = adjacentOccupiedSeatsSkipFloor(oldLayout, pos)
+                    if (occSeats === 0) {
+                        newLayout[i][j] = '#'
+                        if (oldLayout[i][j] !== '#') {
+                            diff = true
+                        }
+                    }  if (occSeats > 4) {
+                        newLayout[i][j] = 'L'
+                        if (oldLayout[i][j] !== 'L') {
+                            diff = true
+                        }
+                    }
                 }
             }
         }
 
-        oldLayoutCached = oldLayout
         oldLayout = newLayout
         newLayout = cloneDeep(oldLayout)
         iterations++
-    } while (!deepEquality(oldLayoutCached, newLayout));
+    } while (diff)
     console.log(`took ${iterations} iters to stabilize`)
 
     return howManyOccupiedSeats(newLayout)
-}
-
-function deepEquality(layout1 : Array<Array<string>>, layout2 : Array<Array<string>>) : boolean {
-    const length = layout1.length
-    const width = layout1[0].length
-
-    for (let i = 0; i < length; i++) {
-        for (let j = 0; j < width; j++) {
-            const l1 = layout1[i][j]
-            const l2 = layout2[i][j]
-            if (l1 !== l2) {
-                return false
-            }
-        }
-    }
-
-    return true
 }
 
 function howManyOccupiedSeats(seatLayout : Array<Array<string>>) : number {
@@ -183,9 +181,17 @@ function readInputArray() : Array<Array<string>> {
 
 function main() {
     const input = readInputArray()
+    let begin = new Date().getTime()
     const solved = solve(input)
     console.log(solved)
+    let end = new Date().getTime()
+    console.log("time: " + (end-begin))
+    
+    begin = new Date().getTime()
     console.log(solve2(input))
+    end = new Date().getTime()
+
+    console.log("time: " + (end-begin))
 }
 
 main()
