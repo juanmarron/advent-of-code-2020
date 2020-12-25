@@ -39,7 +39,7 @@ function readInputArray() : Array<Array<string>> {
     const fs = require('fs')
     const array = fs.readFileSync('test').toString().split("\n").map((e: string) => {
         return e.split('')
-    })   
+    })
     return array
 }
 
