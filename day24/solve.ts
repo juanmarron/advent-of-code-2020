@@ -22,6 +22,13 @@ function solve(input : Array<string>) : number {
             .map(e => findTile(e))))
 }
 
+// I'll get around to part 2 later
+// Probably the best way to do this is to iterate over the black tiles, apply the rules for whether or not
+// to flip them, then find neighbors, and recursively call the method for each neighbor.
+function solve2() {
+
+}
+
 function aggregate(tiles : Array<TilePosition>) : Map<string, number> {
     const map = new Map<string, number>()
     tiles.forEach(e => {
@@ -90,6 +97,7 @@ function findTile(directions : Array<Side>) : TilePosition {
 
     return currentPosition
 }
+
 
 function tokenizeInput(input : string) : Array<Side> {
     const ra = input.split('')
