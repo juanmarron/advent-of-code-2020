@@ -1,38 +1,6 @@
 import {cloneDeep} from 'lodash';
 
-// clockwise starting left (or at 0,0) and from z=-1 to z=1
-// x,y,z
-const directions = [
-    // z=-1
-    [0, 0, -1],
-    [-1, 0, -1],
-    [-1, -1, -1],
-    [0, -1, -1],
-    [1, -1, -1],
-    [1, 0, -1],
-    [1, 1, -1],
-    [0, 1, -1],
-    [-1, 1, -1],
-    // z = currentPlane
-    [-1, 0, 0],
-    [-1, -1, 0],
-    [0, -1, 0],
-    [1, -1, 0],
-    [1, 0, 0],
-    [1, 1, 0],
-    [0, 1, 0],
-    [-1, 1, 0],
-    // z=1
-    [0, 0, 1],
-    [-1, 0, 1],
-    [-1, -1, 1],
-    [0, -1, 1],
-    [1, -1, 1],
-    [1, 0, 1],
-    [1, 1, 1],
-    [0, 1, 1],
-    [-1, 1, 1],
-]
+const directions = permutations3d()
 
 interface Position {
     x:number,
@@ -73,6 +41,20 @@ function solve(initialGrid : Array<Array<Array<string>>>, iterations : number) :
     return countHashes(newGrid)
 }
 
+function permutations3d() : Array<Array<number>> {
+    const perms = []
+    for (let i = -1; i <= 1; i++) {
+        for (let j = -1; j <= 1; j++) {
+            for (let n = -1; n <= 1; n++) {
+                if (!(i === 0 && j === 0 && n === 0)) {
+                    perms.push([i,j,n])
+                }
+            }
+        }
+    }
+    return perms
+}
+
 function countHashes(grid: Array<Array<Array<string>>>) : number {
 
     let hashes = 0
@@ -109,8 +91,8 @@ function padGrid(grid : Array<Array<Array<string>>>) {
         // I don't fully understand how on earth that was happening; at any rate, that is why I use cloneDeep. It generates a completely new reference and the problem went away.
         const newPlane = cloneDeep(retVal[n])
         for (let i = 0; i < y; i++) {
-            newPlane[i].push("x")
-            newPlane[i].unshift("x")
+            newPlane[i].push(".")
+            newPlane[i].unshift(".")
         }
         retVal[n] = newPlane
     }
